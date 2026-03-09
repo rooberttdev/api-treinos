@@ -13,6 +13,11 @@ import {
 import z from "zod";
 
 import { auth } from "./lib/auth.js";
+import { aiRoutes } from "./routes/ai.js";
+import { homeRoutes } from "./routes/home.js";
+import { meRoutes } from "./routes/me.js";
+import { statsRoutes } from "./routes/stats.js";
+import { workoutPlanRoutes } from "./routes/workout-plan.js";
 
 const app = Fastify({
   logger: true,
@@ -24,17 +29,22 @@ app.setSerializerCompiler(serializerCompiler);
 await app.register(fastifySwagger, {
   openapi: {
     info: {
-      title: "Treinos API",
-      description: "API para gerenciamento de treinos",
+      title: "Bootcamp Treinos API",
+      description: "API para o bootcamp de treinos do FSC",
       version: "1.0.0",
     },
-    servers: [{ description: "Localhost", url: "http://localhost:3000" }],
+    servers: [
+      {
+        description: "Localhost",
+        url: "http://localhost:8080",
+      },
+    ],
   },
   transform: jsonSchemaTransform,
 });
 
 await app.register(fastifyCors, {
-  origin: ["http://localhost:3001"],
+  origin: ["http://localhost:3000"],
   credentials: true,
 });
 
@@ -43,8 +53,8 @@ await app.register(fastifyApiReference, {
   configuration: {
     sources: [
       {
-        title: "Treinos API",
-        slug: "treinos-api",
+        title: "Bootcamp Treinos API",
+        slug: "bootcamp-treinos-api",
         url: "/swagger.json",
       },
       {
@@ -55,6 +65,12 @@ await app.register(fastifyApiReference, {
     ],
   },
 });
+
+await app.register(homeRoutes, { prefix: "/home" });
+await app.register(meRoutes, { prefix: "/me" });
+await app.register(statsRoutes, { prefix: "/stats" });
+await app.register(workoutPlanRoutes, { prefix: "/workout-plans" });
+await app.register(aiRoutes, { prefix: "/ai" });
 
 app.withTypeProvider<ZodTypeProvider>().route({
   method: "GET",
@@ -67,11 +83,11 @@ app.withTypeProvider<ZodTypeProvider>().route({
   },
 });
 
-await app.withTypeProvider<ZodTypeProvider>().route({
+app.withTypeProvider<ZodTypeProvider>().route({
   method: "GET",
   url: "/",
   schema: {
-    description: "Hello world route",
+    description: "Hello world",
     tags: ["Hello World"],
     response: {
       200: z.object({
@@ -80,7 +96,9 @@ await app.withTypeProvider<ZodTypeProvider>().route({
     },
   },
   handler: () => {
-    return { message: "Hello, World!" };
+    return {
+      message: "Hello World",
+    };
   },
 });
 
@@ -120,7 +138,7 @@ app.route({
 });
 
 try {
-  await app.listen({ port: Number(process.env.PORT) || 3001 });
+  await app.listen({ port: Number(process.env.PORT) || 8081 });
 } catch (err) {
   app.log.error(err);
   process.exit(1);

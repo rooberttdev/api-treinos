@@ -51,7 +51,7 @@ enum WeekDay {
   THURSDAY
   FRIDAY
   SATURDAY
-  SUNDAY
+  SUNDAY 
 }
 
 model WorkoutDay {
