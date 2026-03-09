@@ -248,11 +248,6 @@ pnpm exec prettier --write .      # Formatação
 ## 👨‍💻 Autor
 
 **Robert Barbosa**
-
-## 📄 Licença
-
-ISC
-
 ---
 
 **Dúvidas?** Abra uma issue ou consulte a documentação em `/docs` quando o servidor estiver rodando.
